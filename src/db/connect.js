@@ -13,6 +13,8 @@ const connectToDb = async () => {
   await client.connect();
 
   database = client.db(process.env.MONGODB_DB_NAME || 'practice');
+  await database.collection('authors').createIndex({ id: 1 }, { unique: true });
+
   return database;
 };
 
