@@ -9,9 +9,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 app.use(router);
 
-app.use(express.json());
-app.use(router);
-
 app.get('/', (req, res) => {
     return res.status(200).json({ message: 'Server is running' });
 });
