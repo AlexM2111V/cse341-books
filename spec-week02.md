@@ -228,11 +228,13 @@ Author documents will be stored in the `authors` collection.
 Required author fields:
 - `id`: string, required, custom id such as `a1`
 - `name`: string, required
+- `birthYear`: number, required, integer (for example, `1775`)
 
 Authors will use custom string ids instead of MongoDB `_id` values for route parameters, matching the `books` collection.
 
 Validation rules:
 - A required string field is invalid if it is missing, `null`, not a string, or an empty/whitespace-only string.
+- A required number field is invalid if it is missing, `null`, or not a number.
 - The `authors` collection must have a unique index on `id` so that two concurrent create requests cannot both succeed with the same `id`.
 
 ### Relationship to Books
@@ -259,7 +261,8 @@ Success:
       [
         {
           "id": "a1",
-          "name": "Maya Rivera"
+          "name": "Maya Rivera",
+          "birthYear": 1775
         }
       ]
 
@@ -279,7 +282,8 @@ Success:
 
       {
         "id": "a1",
-        "name": "Maya Rivera"
+        "name": "Maya Rivera",
+        "birthYear": 1775
       }
 
 Errors:
@@ -302,7 +306,8 @@ Request body:
 
     {
       "id": "a3",
-      "name": "Example Author Name"
+      "name": "Example Author Name",
+      "birthYear": 1980
     }
 
 Success:
@@ -311,14 +316,15 @@ Success:
 
       {
         "id": "a3",
-        "name": "Example Author Name"
+        "name": "Example Author Name",
+        "birthYear": 1980
       }
 
 Errors:
-- `400` if a required field is missing, `null`, not a string, or an empty/whitespace-only string. The message names every field that failed.
+- `400` if a required field is missing, `null`, or the wrong type (a non-string `name`, or a non-number `birthYear`), or `name` is an empty/whitespace-only string. The message names every field that failed.
 
       {
-        "message": "Missing required field(s): name"
+        "message": "Missing required field(s): name, birthYear"
       }
 
 - `400` if the `id` already exists
@@ -341,7 +347,8 @@ The `id` field must not be sent in the body. If it is sent, it must match the `i
 Request body:
 
     {
-      "name": "Updated Author Name"
+      "name": "Updated Author Name",
+      "birthYear": 1980
     }
 
 Success:
@@ -350,14 +357,15 @@ Success:
 
       {
         "id": "a1",
-        "name": "Updated Author Name"
+        "name": "Updated Author Name",
+        "birthYear": 1980
       }
 
 Errors:
-- `400` if a required field is missing, `null`, not a string, or an empty/whitespace-only string. The message names every field that failed.
+- `400` if a required field is missing, `null`, or the wrong type (a non-string `name`, or a non-number `birthYear`), or `name` is an empty/whitespace-only string. The message names every field that failed.
 
       {
-        "message": "Missing required field(s): name"
+        "message": "Missing required field(s): birthYear"
       }
 
 - `400` if the body includes an `id` that does not match the URL `id`
