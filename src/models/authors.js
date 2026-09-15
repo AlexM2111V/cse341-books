@@ -52,11 +52,20 @@ const authorHasBooks = async (id) => {
   return Boolean(book);
 };
 
+const authorExists = async (id) => {
+  const db = getDb();
+  const collection = db.collection('authors');
+  const author = await collection.findOne({ id });
+
+  return Boolean(author);
+};
+
 export {
   getAllAuthors,
   getAuthorById,
   createAuthor,
   updateAuthor,
   deleteAuthor,
-  authorHasBooks
+  authorHasBooks,
+  authorExists
 };
