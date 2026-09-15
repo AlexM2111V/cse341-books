@@ -1,5 +1,11 @@
 import express from 'express';
-import { getBooksHandler, getBookByIdHandler } from './controllers/books.js';
+import {
+  getBooksHandler,
+  getBookByIdHandler,
+  createBookHandler,
+  updateBookHandler,
+  deleteBookHandler
+} from './controllers/books.js';
 import {
   getAllAuthors,
   getAuthorById,
@@ -22,7 +28,7 @@ const router = express.Router();
  *       200:
  *         description: A list of books
  *       500:
- *         description: Unable to retrieve books
+ *         description: Internal server error
  */
 router.get('/books', getBooksHandler);
 
@@ -47,9 +53,123 @@ router.get('/books', getBooksHandler);
  *       404:
  *         description: Book not found
  *       500:
- *         description: Unable to retrieve the book
+ *         description: Internal server error
  */
 router.get('/books/:id', getBookByIdHandler);
+
+/**
+ * @openapi
+ * /books:
+ *   post:
+ *     tags:
+ *       - Books
+ *     summary: Create a new book
+ *     description: Creates a new book document
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - authorId
+ *               - title
+ *               - publicationDate
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: b4
+ *               authorId:
+ *                 type: string
+ *                 example: a1
+ *               title:
+ *                 type: string
+ *                 example: Example Book Title
+ *               publicationDate:
+ *                 type: string
+ *                 example: 2026-01-15
+ *     responses:
+ *       201:
+ *         description: Book created successfully
+ *       400:
+ *         description: Missing or invalid required field(s), a book with this id already exists, or authorId does not match an existing author
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/books', createBookHandler);
+
+/**
+ * @openapi
+ * /books/{id}:
+ *   put:
+ *     tags:
+ *       - Books
+ *     summary: Update an existing book
+ *     description: Replaces authorId, title, and publicationDate for an existing book. The id in the body, if present, must match the URL id.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The custom book ID, such as b1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - authorId
+ *               - title
+ *               - publicationDate
+ *             properties:
+ *               authorId:
+ *                 type: string
+ *                 example: a2
+ *               title:
+ *                 type: string
+ *                 example: Updated Book Title
+ *               publicationDate:
+ *                 type: string
+ *                 example: 2026-02-20
+ *     responses:
+ *       200:
+ *         description: Book updated successfully
+ *       400:
+ *         description: Missing or invalid required field(s), body id does not match the URL id, or authorId does not match an existing author
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/books/:id', updateBookHandler);
+
+/**
+ * @openapi
+ * /books/{id}:
+ *   delete:
+ *     tags:
+ *       - Books
+ *     summary: Delete an existing book
+ *     description: Deletes an existing book
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The custom book ID, such as b1
+ *     responses:
+ *       204:
+ *         description: Book deleted successfully
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/books/:id', deleteBookHandler);
 
 /**
  * @openapi
